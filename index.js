@@ -18,7 +18,7 @@ function decrementCounter() {
 }
 
 // Jalankan decrementCounter setiap 1 menit (60000 ms)
-setInterval(decrementCounter, 60000); // Mengurangi counter setiap 1 menit
+setInterval(decrementCounter, 86400000); // Mengurangi counter setiap 1 menit
 
 // Endpoint untuk mengambil nilai counter saat ini
 app.get('/get-counter', (req, res) => {
