@@ -25,14 +25,4 @@ app.get('/get-counter', (req, res) => {
   res.json({ count: counterValue });
 });
 
-// Endpoint untuk mengurangi nilai counter secara manual jika diperlukan
-app.post('/update-counter', (req, res) => {
-  if (counterValue > 0) {
-    counterValue -= 4; // Sesuaikan pengurangan dengan 4
-  } else {
-    counterValue = 0;
-  }
-  res.json({ count: counterValue });
-});
-
 module.exports = app; // Ekspor aplikasi Express untuk Vercel
