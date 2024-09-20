@@ -3,22 +3,20 @@ const cors = require('cors');
 const app = express();
 app.use(cors()); // Memungkinkan komunikasi lintas asal (CORS)
 
-let counterValue = 200; // Inisialisasi counter
+let counterValue = 192; // Inisialisasi counter dimulai dari 192
 
 // Function untuk mengurangi counter
 function decrementCounter() {
   if (counterValue > 0) {
     counterValue -= 4; // Kurangi counter sebanyak 4 setiap kali dipanggil
-  } else {
-    // Ketika counter mencapai 0, tunggu 1 menit dan reset kembali ke 200
-    setTimeout(() => {
-      counterValue = 200; // Reset counter ke 200 setelah 1 menit
-    }, 60000); // 60000 ms = 1 menit
+    if (counterValue < 0) {
+      counterValue = 0; // Pastikan counter tidak kurang dari 0
+    }
   }
 }
 
-// Jalankan decrementCounter setiap 1 menit (60000 ms)
-setInterval(decrementCounter, 60000); // Mengurangi counter setiap 1 menit
+// Jalankan decrementCounter setiap 24 jam (86400000 ms)
+setInterval(decrementCounter, 86400000); // Mengurangi counter setiap 24 jam
 
 // Endpoint untuk mengambil nilai counter saat ini
 app.get('/get-counter', (req, res) => {
