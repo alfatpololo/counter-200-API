@@ -3,7 +3,7 @@ const cors = require('cors');
 const app = express();
 app.use(cors()); // Memungkinkan komunikasi lintas asal (CORS)
 
-let counterValue = 184; // Inisialisasi counter dimulai dari 192
+let counterValue = 180; // Inisialisasi counter dimulai dari 192
 let lastDecrementTime = Date.now(); // Waktu terakhir decrement (timestamp sekarang)
 
 // Function untuk menghitung berapa banyak hari yang sudah berlalu
