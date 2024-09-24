@@ -3,33 +3,43 @@ const cors = require('cors');
 const app = express();
 app.use(cors()); // Memungkinkan komunikasi lintas asal (CORS)
 
-let counterValue = 180; // Inisialisasi counter dimulai dari 192
-let lastDecrementTime = Date.now(); // Waktu terakhir decrement (timestamp sekarang)
+let counterValue = 176; // Inisialisasi counter dimulai dari 180
+let lastDecrementDate = new Date(); // Waktu terakhir decrement (default ke sekarang)
 
-// Function untuk menghitung berapa banyak hari yang sudah berlalu
-function calculateDaysPassed(lastTime) {
-  const now = Date.now();
-  const millisecondsPerDay = 86400000; // 24 jam dalam milidetik
-  const timeDifference = now - lastTime; // Selisih waktu sekarang dengan lastDecrementTime
-  return Math.floor(timeDifference / millisecondsPerDay); // Hitung berapa hari yang telah berlalu
+// Helper function untuk mendapatkan waktu di zona WIB (UTC+7)
+function getCurrentWIBTime() {
+  const now = new Date();
+  const utc = now.getTime() + now.getTimezoneOffset() * 60000; // Mengubah ke UTC
+  const wibOffset = 7 * 60 * 60000; // Offset untuk WIB (UTC+7)
+  return new Date(utc + wibOffset); // Mengembalikan waktu dalam zona WIB
 }
 
-// Function untuk mengurangi counter berdasarkan hari yang telah berlalu
-function updateCounter() {
-  const daysPassed = calculateDaysPassed(lastDecrementTime);
-  
-  if (daysPassed > 0 && counterValue > 0) {
-    counterValue -= 4 * daysPassed; // Kurangi 4 untuk setiap hari yang telah berlalu
+// Function untuk mengecek apakah sudah lewat jam 08:00 WIB hari ini
+function hasPassed8AMWIB() {
+  const nowWIB = getCurrentWIBTime();
+  const currentHour = nowWIB.getHours();
+  const currentDay = nowWIB.getDate();
+
+  // Cek apakah sekarang lewat dari jam 8 pagi WIB, dan sudah hari berikutnya dari lastDecrementDate
+  const lastDecrementWIB = getCurrentWIBTime();
+  lastDecrementWIB.setTime(lastDecrementDate.getTime()); // Set lastDecrementDate ke zona WIB
+  return currentHour >= 8 && nowWIB.getDate() !== lastDecrementWIB.getDate();
+}
+
+// Function untuk mengurangi counter jika sudah lewat jam 8 pagi WIB
+function updateCounterIfNeeded() {
+  if (hasPassed8AMWIB() && counterValue > 0) {
+    counterValue -= 4; // Kurangi counter sebanyak 4
     if (counterValue < 0) {
       counterValue = 0; // Pastikan counter tidak kurang dari 0
     }
-    lastDecrementTime = Date.now(); // Update lastDecrementTime ke waktu sekarang
+    lastDecrementDate = getCurrentWIBTime(); // Update lastDecrementDate ke sekarang dalam WIB
   }
 }
 
 // Endpoint untuk mengambil nilai counter saat ini
 app.get('/get-counter', (req, res) => {
-  updateCounter(); // Perbarui counter sebelum mengembalikan hasil
+  updateCounterIfNeeded(); // Perbarui counter jika sudah jam 8 pagi WIB
   res.json({ count: counterValue });
 });
 
