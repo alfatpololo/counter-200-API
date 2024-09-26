@@ -3,7 +3,7 @@ const cors = require('cors');
 const app = express();
 app.use(cors()); // Memungkinkan komunikasi lintas asal (CORS)
 
-let counterValue = 172; // Inisialisasi counter dimulai dari 180
+let counterValue = 168; // Inisialisasi counter dimulai dari 180
 let lastDecrementDate = new Date(); // Waktu terakhir decrement (default ke sekarang)
 
 // Helper function untuk mendapatkan waktu di zona WIB (UTC+7)
